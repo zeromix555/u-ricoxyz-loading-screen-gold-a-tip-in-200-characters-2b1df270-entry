@@ -6,7 +6,7 @@
 //
 // Run: mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const TIP =
@@ -21,3 +21,7 @@ if (TIP.length < 1 || TIP.length > 200) {
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "entry.txt"), TIP, "utf8");
+// Read back: the file on disk must be exactly the tip, nothing more.
+if (readFileSync(join(outDir, "entry.txt"), "utf8") !== TIP) {
+  throw new Error("entry.txt does not match the tip");
+}
